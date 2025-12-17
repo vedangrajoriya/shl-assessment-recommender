@@ -38,8 +38,7 @@ Conditional Test-Type Balancing
 ▼
 Top-10 Assessment Recommendations
 
-yaml
-Copy code
+
 
 ---
 
@@ -78,27 +77,23 @@ Copy code
 ### Health Check
 GET /health
 
-css
-Copy code
 
 Response:
 ```json
 { "status": "healthy" }
 Recommendation Endpoint
-bash
-Copy code
+
+
+
 POST /recommend
 Request body:
-
-json
-Copy code
 {
   "query": "Need a SQL developer who can collaborate with stakeholders"
 }
+
 Response (example):
 
-json
-Copy code
+
 {
   "recommended_assessments": [
     {
@@ -125,30 +120,22 @@ Achieved Recall@10 ≈ 0.5 on the training set.
 
 Evaluation script:
 
-bash
-Copy code
 eval/recall_at_10.py
 Test Predictions
+
 Final predictions for the test set are stored in:
-
-bash
-Copy code
 eval/test_predictions.csv
-CSV format:
 
-csv
-Copy code
+CSV format:
 Query,Assessment_url
 Each query has up to 10 recommended assessment URLs, ordered by relevance.
 
 Running the Project Locally
 Install dependencies
-bash
-Copy code
+
 pip install -r requirements.txt
 Start the API
-bash
-Copy code
+
 uvicorn api.main:app --host 0.0.0.0 --port 8000
 Test the API
 Open: http://localhost:8000/docs
@@ -160,8 +147,7 @@ The API can be deployed on any cloud platform supporting Python and FastAPI (e.g
 Deployment instructions are compatible with standard FastAPI hosting workflows.
 
 Project Structure
-bash
-Copy code
+
 shl-assessment-recommender/
 │
 ├── api/

@@ -3,5 +3,4 @@ pycache/
 *.pyc
 .DS_Store
 .env
-*.npy
 *.parquet

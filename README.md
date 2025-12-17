@@ -1,101 +1,104 @@
-SHL Assessment Recommendation Engine
-Overview
+# SHL Assessment Recommendation Engine
 
-This project implements an intelligent Assessment Recommendation Engine using SHL’s product catalog.
-Given a job description or hiring requirement, the system recommends the most relevant SHL assessments by combining semantic understanding and keyword-based retrieval.
+## Overview
+This repository contains an intelligent **Assessment Recommendation Engine** built using SHL’s product catalog.  
+Given a job description or hiring requirement, the system recommends the **most relevant SHL assessments** using a hybrid information retrieval approach.
 
-The solution is designed to be accurate, explainable, and production-ready, following the requirements provided by the SHL AI team.
+The solution is designed to be **accurate, explainable, and production-ready**, in line with the requirements shared by the SHL AI team.
 
-Key Features
+---
 
-Hybrid retrieval using Semantic Embeddings + BM25
+## Key Features
+- Hybrid retrieval using **Semantic Embeddings + BM25**
+- Query cleaning and lightweight expansion for better intent capture
+- Conditional balancing across **technical** and **behavioral** assessments
+- REST API built with **FastAPI**
+- Evaluation using **Mean Recall@10**
+- Automated generation of test predictions
 
-Intelligent query cleaning and expansion
+---
 
-Balanced recommendations across technical and behavioral assessments
+## System Architecture
 
-REST API built with FastAPI
-
-Evaluation using Mean Recall@10
-
-Fully automated test prediction generation
-
-Architecture
 Query / Job Description
-        │
-        ▼
+│
+▼
 Query Cleaning & Expansion
-        │
-        ▼
+│
+▼
 Hybrid Retrieval
 (Embeddings + BM25)
-        │
-        ▼
+│
+▼
 Candidate Pool Expansion
-        │
-        ▼
+│
+▼
 Conditional Test-Type Balancing
-        │
-        ▼
+│
+▼
 Top-10 Assessment Recommendations
 
-Data
+yaml
+Copy code
 
-Assessment Catalog: Built from the provided SHL dataset (catalog/catalogue.csv)
+---
 
-Queries: Taken from Gen_AI Dataset.xlsx
+## Data
+- **Assessment Catalog**: Built from the provided SHL dataset  
+  - `catalog/catalogue.csv`
+- **Queries**: From `Gen_AI Dataset.xlsx`
+  - Training set → Recall@10 evaluation
+  - Test set → Final prediction generation
 
-Train set → Recall@10 evaluation
+---
 
-Test set → Final prediction generation
+## Recommendation Logic
 
-Recommendation Logic
+1. **Query Cleaning & Expansion**  
+   Extracts important intent keywords (skills, role indicators, behavioral signals) to improve semantic matching.
 
-Query Cleaning & Expansion
-Important intent keywords (e.g., skills, role indicators, behavioral signals) are extracted and appended to improve semantic matching.
+2. **Hybrid Retrieval**
+   - Semantic similarity using Sentence Transformers (`all-MiniLM-L6-v2`)
+   - Keyword relevance using BM25
+   - Combined using weighted scoring favoring semantic similarity.
 
-Hybrid Retrieval
+3. **Candidate Pool Expansion**
+   - Retrieves a larger candidate set (top 25) before reranking to improve recall.
 
-Semantic Search: Sentence Transformers (all-MiniLM-L6-v2)
+4. **Conditional Balancing**
+   - Ensures a balanced mix of technical and behavioral assessments when required.
 
-Keyword Search: BM25
+5. **Final Ranking**
+   - Returns the top 10 assessments ordered by relevance.
 
-Combined using a weighted scoring mechanism favoring semantic similarity.
+---
 
-Candidate Pool Expansion
+## API Endpoints
 
-Retrieve top 25 candidates before reranking to improve recall.
-
-Conditional Balancing
-
-If a query spans both technical and behavioral competencies, the final recommendations are balanced across test types without reducing relevance.
-
-Final Ranking
-
-Top 10 assessments returned in ranked order.
-
-API Endpoints
-Health Check
+### Health Check
 GET /health
 
+css
+Copy code
 
 Response:
-
+```json
 { "status": "healthy" }
-
 Recommendation Endpoint
+bash
+Copy code
 POST /recommend
-
-
 Request body:
 
+json
+Copy code
 {
   "query": "Need a SQL developer who can collaborate with stakeholders"
 }
+Response (example):
 
-
-Response:
-
+json
+Copy code
 {
   "recommended_assessments": [
     {
@@ -109,58 +112,56 @@ Response:
     }
   ]
 }
-
 Evaluation
-
 Metric: Mean Recall@10
 
-Approach:
+Methodology:
 
-For each training query, a hit is counted if the correct assessment appears in the top-10 recommendations.
+A hit is counted if the correct assessment appears in the top-10 recommendations for a query.
 
 Result:
 
 Achieved Recall@10 ≈ 0.5 on the training set.
 
-Given the limited catalog size and verbose job descriptions, this score reflects strong semantic matching performance.
-
 Evaluation script:
 
+bash
+Copy code
 eval/recall_at_10.py
-
 Test Predictions
+Final predictions for the test set are stored in:
 
-Final predictions for the test set are generated in:
-
+bash
+Copy code
 eval/test_predictions.csv
+CSV format:
 
-
-Format:
-
+csv
+Copy code
 Query,Assessment_url
-
-
 Each query has up to 10 recommended assessment URLs, ordered by relevance.
 
 Running the Project Locally
-1. Install dependencies
+Install dependencies
+bash
+Copy code
 pip install -r requirements.txt
-
-2. Start the API
+Start the API
+bash
+Copy code
 uvicorn api.main:app --host 0.0.0.0 --port 8000
-
-3. Test the API
-
-Visit: http://localhost:8000/docs
+Test the API
+Open: http://localhost:8000/docs
 
 Use Swagger UI to test /recommend
 
 Deployment
-
-The application can be deployed on any cloud platform supporting Python (e.g., Render, Railway, Azure).
-Deployment instructions are compatible with standard FastAPI hosting setups.
+The API can be deployed on any cloud platform supporting Python and FastAPI (e.g., Render, Railway, Azure).
+Deployment instructions are compatible with standard FastAPI hosting workflows.
 
 Project Structure
+bash
+Copy code
 shl-assessment-recommender/
 │
 ├── api/
@@ -180,14 +181,12 @@ shl-assessment-recommender/
 │
 ├── requirements.txt
 └── README.md
-
 Limitations & Future Improvements
-
 Limited assessment catalog size restricts maximum achievable recall.
 
-Test-type classification is heuristic-based.
+Test-type classification uses heuristic rules.
 
-Future improvements could include:
+Future improvements may include:
 
 Learning-to-rank re-ranking
 
@@ -195,11 +194,9 @@ Larger assessment coverage
 
 Domain-specific embedding fine-tuning
 
-
 Author
 Vedang Rajoriya
 Final-year B.Tech student | AI / ML Enthusiast
 
 Final Note
-
-This solution focuses on clarity, robustness, and explainability, aligning with SHL’s real-world assessment recommendation use cases.
+This project emphasizes clarity, robustness, and explainability, aligning with real-world SHL assessment recommendation use cases.

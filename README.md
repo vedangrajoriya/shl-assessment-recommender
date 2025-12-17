@@ -79,7 +79,7 @@ GET /health
 
 
 Response:
-```json
+
 { "status": "healthy" }
 Recommendation Endpoint
 
@@ -107,6 +107,7 @@ Response (example):
     }
   ]
 }
+
 Evaluation
 Metric: Mean Recall@10
 
